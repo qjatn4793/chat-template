@@ -1,14 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Home Page</title>
+  <meta charset="UTF-8">
+  <title>Home Page</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css}">
 </head>
 
 <body>
-	<h1>Welcome to the Home Page</h1>
-</body>
+  <h1>Welcome to the Home Page</h1>
 
-<script type="text/javascript">
-</script>
+  <!-- 입력값을 받는 폼 추가 -->
+  <form id="inputForm">
+    <label for="textInput">Enter Text:</label>
+    <input type="text" id="textInput" name="text">
+    <button type="button" onclick="sendPostRequest()">Send POST Request</button>
+  </form>
+
+  <!-- 결과를 표시할 영역 -->
+  <div id="result"></div>
+
+  <script type="text/javascript">
+    // Enter 키 입력 시 폼 제출 막기
+    document.getElementById("inputForm").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault(); // 폼 제출 막기
+        sendPostRequest(); // API 호출
+      }
+    });
+
+    function sendPostRequest() {
+      // 입력값 가져오기
+      var textInput = document.getElementById("textInput");
+      var text = textInput.value;
+
+      // AJAX를 사용하여 Flask 애플리케이션에 POST 요청을 보냅니다.
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:5000/chat", true);
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+      // 모델에 보낼 데이터
+      var data = JSON.stringify({"text": text});
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // 요청이 성공하면 결과를 화면에 표시합니다.
+          var resultDiv = document.getElementById("result");
+          resultDiv.innerHTML = xhr.responseText;
+
+          // 입력 필드 비우기
+          textInput.value = "";
+        } 
+      };
+
+      xhr.send(data);
+    }
+  </script>
+</body>
 </html>

@@ -1,17 +1,15 @@
 package com.chat.template.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.chat.template.service.MainService;
-import com.chat.template.vo.MainVo;
 
-@RestController
+@Controller
 public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
@@ -19,11 +17,13 @@ public class MainController {
 	@Autowired
 	MainService mainService;
 	
-	@PostMapping("/chat")
-	public List<MainVo> main() {
+	@GetMapping("/")
+	public String main(Model model) {
 		
 		logger.info("호출 : {}", "test");
 		
-		return mainService.getUser();
+		model.addAttribute(mainService.getUser());
+		
+		return "/index.html";
 	}
 }
